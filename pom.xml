@@ -16,12 +16,12 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>product-service</module>
-        <module>order-service</module>
-        <module>inventory-service</module>
-        <module>discovery-server</module>
-        <module>api-gateway</module>
-        <module>notification-service</module>
+        <module>shopper-product-service</module>
+        <module>shopper-order-service</module>
+        <module>shopper-inventory-service</module>
+        <module>shopper-discovery-server</module>
+        <module>shopper-api-gateway</module>
+        <module>shopper-notification-service</module>
     </modules>
 
     <properties>
