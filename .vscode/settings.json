@@ -1,0 +1,7 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.saveActions.organizeImports": true,
+    "java.format.settings.url": ".vscode/custom-formatter.xml",
+    "java.format.settings.profile": "CustomStyle",
+}

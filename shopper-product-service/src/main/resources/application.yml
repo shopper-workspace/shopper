@@ -1,0 +1,53 @@
+server: 
+  port: 5502
+
+# Logging
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%logger{18}) - %msg%n"
+  level:
+    com:
+      shopper: DEBUG
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+    web: INFO
+    root: INFO
+
+# Service Discovery
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: product-service
+
+  # Data Store
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productdb
+    driver-class-name: org.postgresql.Driver
+    username: product-service-user
+    password: password
+
+# Tracing & Observability
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0

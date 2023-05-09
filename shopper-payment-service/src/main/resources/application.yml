@@ -1,0 +1,62 @@
+server: 
+  port: 5505
+
+# Logging
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%logger{18}) - %msg%n"
+  level:
+    com:
+      shopper: DEBUG
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+    web: INFO
+    root: INFO
+
+# Service Discovery
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: payment-service
+
+  # Data Store
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/paymentdb
+    driver-class-name: org.postgresql.Driver
+    username: payment-service-user
+    password: password
+
+  # Event Streaming
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      security:
+        protocol: PLAINTEXT
+
+# Tracing & Observability
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0

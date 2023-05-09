@@ -1,0 +1,44 @@
+server: 
+  port: 8761
+
+# Logging
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %-20.20thread | %5p | %cyan(%-25.25logger{25}) | %m%n"
+  level:
+    com:
+      shopper: DEBUG
+    org:
+      springframework:
+        web: INFO
+        security: INFO
+    web: INFO
+    root: INFO
+
+# Service Discovery
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+spring:
+  application:
+    name: discovery-server
+
+# Tracing & Observability
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
