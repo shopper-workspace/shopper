@@ -43,6 +43,7 @@ public class InventoryConsumer {
             logger.debug("Duplicate message received: " + e.getMessage());
         } catch (Exception e) {
             logger.error("Error consuming message: " + e.getMessage());
+            throw e;
         }
     }
 

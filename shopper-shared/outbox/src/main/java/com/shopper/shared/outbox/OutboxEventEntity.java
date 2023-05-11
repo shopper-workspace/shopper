@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "outbox_event")
@@ -40,6 +41,10 @@ public class OutboxEventEntity {
 
     @Column(nullable = false, length = Length.LOB_DEFAULT)
     private String payload;
+
+    @Setter
+    @Column(nullable = true)
+    private String traceParent;
 
     public static OutboxEventEntity fromEvent(OutboxEvent event) {
         return OutboxEventEntity.builder()

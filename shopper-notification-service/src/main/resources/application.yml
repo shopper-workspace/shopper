@@ -4,7 +4,7 @@ server:
 # Logging
 logging:
   pattern:
-    console: "%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%logger{18}) - %msg%n"
+    console: "[%d{HH:mm:ss.SSS}, %X{traceId:-n/a}] | %-20.20thread | %highlight(%-5level) | %cyan(%-25.25logger{25}) | %m%n"
   level:
     com:
       shopper: DEBUG
@@ -31,13 +31,8 @@ spring:
     consumer:
       auto-offset-reset: earliest
       enable-auto-commit: false
-      group-id: notification-consumer
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       security:
         protocol: PLAINTEXT
-      properties:
-        "[spring.json.type.mapping]": event:com.shopper.notificationservice.OrderEvent.Order
 
 # Tracing & Observability
 management:

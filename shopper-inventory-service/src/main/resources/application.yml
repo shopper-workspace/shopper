@@ -4,7 +4,7 @@ server:
 # Logging
 logging:
   pattern:
-    console: "%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %-20.20thread | %5p | %cyan(%-25.25logger{25}) | %m%n"
+    console: "[%d{HH:mm:ss.SSS}, %X{traceId:-n/a}] | %-20.20thread | %highlight(%-5level) | %cyan(%-25.25logger{25}) | %m%n"
   level:
     com:
       shopper: DEBUG

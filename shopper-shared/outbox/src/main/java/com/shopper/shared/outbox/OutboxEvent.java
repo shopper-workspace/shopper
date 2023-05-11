@@ -13,7 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OutboxEvent {
-
     private String aggregateType;
     private UUID aggregateId;
     private String type;

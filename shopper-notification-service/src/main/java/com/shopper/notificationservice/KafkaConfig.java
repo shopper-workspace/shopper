@@ -1,4 +1,4 @@
-package com.shopper.orderservice.config;
+package com.shopper.notificationservice;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -28,7 +28,7 @@ public class PaymentService {
 
         if (orderDto.orderStatus() == OrderEvent.OrderStatus.RESERVED) {
 
-            if (Math.random() < 0.8) {
+            if (Math.random() < 0.6) {
                 BigDecimal totalPrice = orderDto.orderItems().stream().map(OrderEvent.OrderItem::unitPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 logger.info("Payment successful: {}: {} paid", orderDto.id(), totalPrice);
