@@ -1,19 +1,5 @@
 version: '3.9'
 services:
-  mongo:
-    image: mongo:${MONGO_VERSION}
-    container_name: mongo
-    restart: unless-stopped
-    networks:
-      - shopper
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-      - mongo_config:/data/configdb
-    profiles:
-      - infra
-
   postgres:
     build:
       context: postgres
@@ -77,7 +63,7 @@ services:
       - infra
 
   zipkin:
-    image: openzipkin/zipkin
+    image: openzipkin/zipkin:${ZIPKIN_VERSION}
     container_name: zipkin
     restart: unless-stopped
     networks:
@@ -106,19 +92,27 @@ services:
       - infra
 
   kafka:
-    image: debezium/kafka:${DEBEZIUM_VERSION}
+    build:
+      context: kafka
+      args:
+        DEBEZIUM_VERSION: ${DEBEZIUM_VERSION}
+        JMX_AGENT_VERSION: ${JMX_AGENT_VERSION}
     container_name: kafka
     restart: unless-stopped
     networks:
       - shopper
     environment:
-      BROKER_ID: 1
+      BROKER_ID: "1"
       ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://kafka:9092
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OPTS: -javaagent:/kafka/etc/jmx_prometheus_javaagent.jar=9192:/kafka/etc/config.yml
+      JMXPORT: 8184
+      JMXHOST: localhost
     ports:
+      - "8184:9192"
       - "9092:9092"
     volumes:
       - kafka_data:/kafka/data
@@ -153,7 +147,7 @@ services:
       - infra
 
   kafkaui:
-    image: provectuslabs/kafka-ui:latest
+    image: provectuslabs/kafka-ui:${KAFKAUI_VERSION}
     container_name: kafka-ui
     restart: unless-stopped
     networks:
@@ -173,7 +167,7 @@ services:
       - infra
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:${PROMETHEUS_VERSION}
     container_name: prometheus
     restart: unless-stopped
     networks:
@@ -187,13 +181,18 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ../init/prometheus-init.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
+    depends_on:
+      - kafka
     profiles:
       - infra
 
   grafana:
-    image: grafana/grafana:latest
+    build:
+      context: grafana
+      args:
+        GRAFANA_VERSION: ${GRAFANA_VERSION}
     container_name: grafana
     restart: unless-stopped
     networks:
@@ -204,7 +203,6 @@ services:
     ports:
       - "8183:3000"
     volumes:
-      - ../init/grafana-init.yml:/etc/grafana/provisioning/datasources/prometheus_ds.yml
       - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
@@ -212,8 +210,8 @@ services:
       - infra
 
   discovery-server:
-    image: shopper/discovery-server:latest
-    container_name: discovery-server
+    image: shopper/shopper-discovery-server:latest
+    container_name: shopper-discovery-server
     restart: unless-stopped
     networks:
       - shopper
@@ -228,8 +226,8 @@ services:
       - backend
 
   api-gateway:
-    image: shopper/api-gateway:latest
-    container_name: api-gateway
+    image: shopper/shopper-api-gateway:latest
+    container_name: shopper-api-gateway
     restart: unless-stopped
     networks:
       - shopper
@@ -247,8 +245,8 @@ services:
       - backend
 
   product-service:
-    image: shopper/product-service:latest
-    container_name: product-service
+    image: shopper/shopper-product-service:latest
+    container_name: shopper-product-service
     restart: unless-stopped
     networks:
       - shopper
@@ -256,18 +254,23 @@ services:
       SERVER_PORT: 8080
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/productdb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/productdb
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_USERNAME: product-service-user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - discovery-server
       - api-gateway
-      - mongo
+      - postgres
       - zipkin
+      - kafka
     profiles:
       - backend
 
   order-service:
-    image: shopper/order-service:latest
-    container_name: order-service
+    image: shopper/shopper-order-service:latest
+    container_name: shopper-order-service
     restart: unless-stopped
     networks:
       - shopper
@@ -290,8 +293,8 @@ services:
       - backend
 
   inventory-service:
-    image: shopper/inventory-service:latest
-    container_name: inventory-service
+    image: shopper/shopper-inventory-service:latest
+    container_name: shopper-inventory-service
     restart: unless-stopped
     networks:
       - shopper
@@ -303,17 +306,43 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_DATASOURCE_USERNAME: inventory-service-user
       SPRING_DATASOURCE_PASSWORD: password
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - discovery-server
       - api-gateway
       - postgres
       - zipkin
+      - kafka
+    profiles:
+      - backend
+
+  payment-service:
+    image: shopper/shopper-payment-service:latest
+    container_name: shopper-payment-service
+    restart: unless-stopped
+    networks:
+      - shopper
+    environment:
+      SERVER_PORT: 8080
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/paymentdb
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_USERNAME: payment-service-user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - postgres
+      - zipkin
+      - kafka
     profiles:
       - backend
 
   notification-service:
-    image: shopper/notification-service:latest
-    container_name: notification-service
+    image: shopper/shopper-notification-service:latest
+    container_name: shopper-notification-service
     restart: unless-stopped
     networks:
       - shopper
@@ -334,8 +363,6 @@ networks:
   shopper:
 
 volumes:
-  mongo_data:
-  mongo_config:
   postgres_data:
   zookeeper_data:
   zookeeper_txns:

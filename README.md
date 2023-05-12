@@ -22,7 +22,15 @@ Then start backend service containers.
 docker-compose -f ./deploy/docker/docker-compose.yml --profile backend up -d
 ```
 
-## Stop Docker Containers
+## Register Debezium connectors
+
+Register debezium connectors to start producing outbox events.
+
+```
+bash ./deploy/docker/postgres/create-connectors.sh
+```
+
+## Cleanup
 
 To clean service containers:
 
