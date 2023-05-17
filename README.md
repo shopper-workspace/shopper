@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/erenpinaz/shopper/_apis/build/status%2Fshopper-workspace.shopper?branchName=master)](https://dev.azure.com/erenpinaz/shopper/_build/latest?definitionId=1&branchName=master)
+
 # shopper
 
 Monorepo for shopper microservices
