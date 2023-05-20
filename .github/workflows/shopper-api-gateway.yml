@@ -1,0 +1,16 @@
+name: shopper-api-gateway
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - ./shopper-api-gateway/**
+      - ./shopper-shared/**
+      - ./.github/workflows/shopper-api-gateway.yml
+      - ./pom.xml
+
+jobs:
+  run:
+    uses: ./.github/workflows/service-workflow.yml
+    with:
+      service: shopper-api-gateway
