@@ -1,3 +1,4 @@
+[![service-workflow](https://github.com/shopper-workspace/shopper/actions/workflows/service-workflow.yml/badge.svg)](https://github.com/shopper-workspace/shopper/actions/workflows/service-workflow.yml)
 [![Build Status](https://dev.azure.com/erenpinaz-devops/shopper/_apis/build/status%2Fshopper-workspace.shopper?branchName=master)](https://dev.azure.com/erenpinaz-devops/shopper/_build/latest?definitionId=2&branchName=master)
 
 # shopper
