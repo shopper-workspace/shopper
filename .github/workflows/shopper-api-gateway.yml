@@ -4,10 +4,10 @@ on:
   push:
     branches: [ master ]
     paths:
-      - ./shopper-api-gateway/**
-      - ./shopper-shared/**
-      - ./.github/workflows/shopper-api-gateway.yml
-      - ./pom.xml
+      - shopper-api-gateway/**
+      - shopper-shared/**
+      - .github/workflows/shopper-api-gateway.yml
+      - pom.xml
 
 jobs:
   run:
