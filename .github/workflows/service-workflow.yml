@@ -19,4 +19,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn clean package --projects :${{ inputs.service }} --also-make --batch-mode
+      run: mvn clean package --projects :${{ inputs.service }} --also-make --batch-mode --no-transfer-progress
