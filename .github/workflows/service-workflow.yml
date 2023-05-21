@@ -24,7 +24,7 @@ jobs:
       
     - name: Build & Publish Docker Image to Github Packages
       run: |
-        export CONTAINER_REGISTRY=${{ env.CONTAINER-REGISTRY }}
+        export CONTAINER_REGISTRY=${{ env.CONTAINER_REGISTRY }}
         export IMAGE_TAG=${{ env.IMAGE_TAG }}
         
         if [ ! -z "${{ inputs.main-class }}" ]; then
