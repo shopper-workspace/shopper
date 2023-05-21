@@ -1,0 +1,18 @@
+name: shopper-product-service
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - shopper-product-service/**
+      - shopper-shared/**
+      - .github/workflows/shopper-product-service.yml
+      - pom.xml
+
+jobs:
+  run:
+    uses: ./.github/workflows/service-workflow.yml
+    with:
+      service: shopper-product-service
+      main-class: ProductServiceApplication
