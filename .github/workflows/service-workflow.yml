@@ -30,7 +30,7 @@ jobs:
         if [ ! -z "${{ inputs.main-class }}" ]; then
           MAIN_CLASS_ARGS="-Djib.container.mainClass=${{ inputs.main-class }}"
         fi
-
+        
         mvn clean package jib:dockerBuild \
         -Djib.to.auth.username=${{ github.actor }} \
         -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} \
