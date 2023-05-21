@@ -1,0 +1,18 @@
+name: shopper-discovery-server
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - shopper-discovery-server/**
+      - shopper-shared/**
+      - .github/workflows/shopper-discovery-server.yml
+      - pom.xml
+
+jobs:
+  run:
+    uses: ./.github/workflows/service-workflow.yml
+    with:
+      service: shopper-discovery-server
+      main-class: DiscoveryServerApplication
