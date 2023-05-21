@@ -1,0 +1,18 @@
+name: shopper-inventory-service
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - shopper-inventory-service/**
+      - shopper-shared/**
+      - .github/workflows/shopper-inventory-service.yml
+      - pom.xml
+
+jobs:
+  run:
+    uses: ./.github/workflows/service-workflow.yml
+    with:
+      service: shopper-inventory-service
+      main-class: InventoryServiceApplication
