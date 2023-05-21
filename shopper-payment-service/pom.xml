@@ -15,8 +15,6 @@
 
     <properties>
         <java.version>17</java.version>
-        <docker.image.src>eclipse-temurin:17.0.6_10-jre</docker.image.src>
-        <docker.image.dst>shopper/${project.artifactId}</docker.image.dst>
     </properties>
 
     <dependencies>
@@ -104,20 +102,18 @@
                 <version>3.2.1</version>
                 <configuration>
                     <from>
-                        <image>${docker.image.src}</image>
+                        <image>eclipse-temurin:17.0.6_10-jre</image>
                     </from>
                     <to>
-                        <image>${docker.image.dst}</image>
+                        <image>${env.CONTAINER_REGISTRY}/${project.artifactId}:${env.IMAGE_TAG}</image>
                     </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-Xms2048m</jvmFlag>
+                            <jvmFlag>-Xmx2048m</jvmFlag>
+                        </jvmFlags>
+                    </container>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>dockerBuild</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
