@@ -37,12 +37,9 @@ jobs:
           MAIN_CLASS_ARGS="-Djib.container.mainClass=${{ inputs.main-class }}"
         fi
         
-        mvn clean package \
+        mvn clean package jib:build \
+        -Djib.to.auth.username=${{ github.actor }} \
+        -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} \
         -B -am -ntp -pl ${{ inputs.service }} \
         $MAIN_CLASS_ARGS
-        
-        mvn jib:build \
-        -B -ntp -pl ${{ inputs.service }}
-        -Djib.to.auth.username=${{ github.actor }} \
-        -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }}
       shell: bash
