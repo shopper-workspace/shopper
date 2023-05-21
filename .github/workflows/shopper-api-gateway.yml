@@ -15,3 +15,4 @@ jobs:
     uses: ./.github/workflows/service-workflow.yml
     with:
       service: shopper-api-gateway
+      main-class: ApiGatewayApplication
