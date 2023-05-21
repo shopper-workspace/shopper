@@ -3,12 +3,15 @@ name: service-workflow
 on:
   workflow_call:
     inputs:
+      # Maven module name (service name)
       service:
         required: true
         type: string
+      # Main class of the service module
       main-class:
         required: false
         type: string
+        
 env:
   CONTAINER_REGISTRY: ghcr.io
   IMAGE_TAG: ga-${{ github.sha }}
@@ -37,6 +40,6 @@ jobs:
         mvn clean package jib:dockerBuild \
         -Djib.to.auth.username=${{ github.actor }} \
         -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} \
-        -B -am -ntp -pl ${{ inputs.service }} \
+        -B -ntp -pl ${{ inputs.service }} \
         $MAIN_CLASS_ARGS
       shell: bash
