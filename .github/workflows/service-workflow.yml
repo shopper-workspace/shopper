@@ -40,6 +40,6 @@ jobs:
         mvn clean package jib:build \
         -Djib.to.auth.username=${{ github.actor }} \
         -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} \
-        -B -ntp -pl ${{ inputs.service }} \
+        -B -amd -ntp -pl ${{ inputs.service }} \
         $MAIN_CLASS_ARGS
       shell: bash
