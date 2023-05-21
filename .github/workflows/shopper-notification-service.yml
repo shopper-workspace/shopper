@@ -1,0 +1,18 @@
+name: shopper-notification-service
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - shopper-notification-service/**
+      - shopper-shared/**
+      - .github/workflows/shopper-notification-service.yml
+      - pom.xml
+
+jobs:
+  run:
+    uses: ./.github/workflows/service-workflow.yml
+    with:
+      service: shopper-notification-service
+      main-class: NotificationServiceApplication
