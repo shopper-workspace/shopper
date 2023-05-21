@@ -6,6 +6,9 @@ on:
       service:
         required: true
         type: string
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  IMAGE_TAG: ga-${{ github.sha }}
 
 jobs:
   build:
@@ -18,5 +21,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: mvn clean package --projects :${{ inputs.service }} --also-make --batch-mode --no-transfer-progress
+      
+    - name: Build & Publish Docker Image to Github Packages
+      run: |
+        export CONTAINER_REGISTRY=${{ env.CONTAINER-REGISTRY }}
+        export IMAGE_TAG=${{ env.IMAGE_TAG }}
+        
+        if [ ! -z "${{ inputs.main-class }}" ]; then
+          MAIN_CLASS_ARGS="-Djib.container.mainClass=${{ inputs.main-class }}"
+        fi
+
+        mvn clean package jib:build \
+        -Djib.to.auth.username=${{ github.actor }} \
+        -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} \
+        -B -am -ntp -pl ${{ inputs.service }} \
+        $MAIN_CLASS_ARGS
+      shell: bash
